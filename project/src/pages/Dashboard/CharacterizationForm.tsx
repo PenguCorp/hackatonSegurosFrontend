@@ -1,5 +1,5 @@
 import React from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../../components/ui/Card";
 import { Input } from "../../components/ui/Input";
 import { Select } from "../../components/ui/Select";
@@ -8,191 +8,201 @@ import { TextArea } from "../../components/ui/TextArea";
 import { Button } from "../../components/ui/Button";
 import { UserCharacterizationForm } from "../../types";
 import { motion } from "framer-motion";
+import { useAuth } from "../../context/AuthContext";
+import api from "../../utils/api";
 
-const GENDER_OPTIONS = [
-  { value: "", label: "Select gender" },
-  { value: "male", label: "Male" },
-  { value: "female", label: "Female" },
-  { value: "non-binary", label: "Non-binary" },
-  { value: "prefer-not-to-say", label: "Prefer not to say" },
+const PLAZO_OPTIONS = [
+  { value: "", label: "Selecciona un plazo" },
+  { value: "menos_3", label: "Menos de 3 años" },
+  { value: "entre_3_5", label: "Entre 3 y 5 años" },
+  { value: "mas_5", label: "Más de 5 años" },
 ];
 
-const EDUCATION_OPTIONS = [
-  { value: "", label: "Select education level" },
-  { value: "high-school", label: "High School" },
-  { value: "associate", label: "Associate Degree" },
-  { value: "bachelor", label: "Bachelor's Degree" },
-  { value: "master", label: "Master's Degree" },
-  { value: "doctorate", label: "Doctorate" },
-  { value: "other", label: "Other" },
+const FRECUENCIA_ACTUALIZACIONES_OPTIONS = [
+  { value: "", label: "Selecciona una frecuencia" },
+  { value: "diario", label: "Diario" },
+  { value: "semanal", label: "Semanal" },
+  { value: "quincenal", label: "Quincenal" },
+  { value: "mensual", label: "Mensual" },
 ];
 
-const INTEREST_OPTIONS = [
-  { id: "technology", label: "Technology" },
-  { id: "science", label: "Science" },
-  { id: "art", label: "Art & Design" },
-  { id: "sports", label: "Sports & Fitness" },
-  { id: "music", label: "Music" },
-  { id: "travel", label: "Travel" },
-  { id: "cooking", label: "Cooking" },
-  { id: "reading", label: "Reading" },
+const FRECUENCIA_PAGOS_OPTIONS = [
+  { value: "", label: "Selecciona una frecuencia" },
+  { value: "siempre", label: "Siempre" },
+  { value: "algunas_veces", label: "Algunas veces" },
+  { value: "nunca", label: "Nunca" },
+];
+
+const COMODIDAD_DIGITAL_OPTIONS = [
+  { value: "", label: "Selecciona tu nivel de comodidad" },
+  { value: "muy_comodo", label: "Muy cómodo" },
+  { value: "algo_comodo", label: "Algo cómodo" },
+  { value: "prefiero_humano", label: "Prefiero atención humana" },
 ];
 
 export const CharacterizationForm: React.FC = () => {
+  const { user } = useAuth();
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors, isSubmitting },
   } = useForm<UserCharacterizationForm>({
     defaultValues: {
-      fullName: "",
-      age: 0,
-      gender: "",
-      occupation: "",
-      education: "",
-      interests: [],
-      favoriteColor: "#3B82F6", // Default to blue
-      bio: "",
+      usuario_id: user?.id ? parseInt(user.id) : 0,
+      motivacion: "",
+      plazo_objetivo: "menos_3",
+      emocion_logro: "",
+      importancia: 3,
+      frecuencia_actualizaciones: "diario",
+      ayuda_recordatorios: false,
+      ayuda_consejos: false,
+      ayuda_explicaciones: false,
+      ayuda_mensajes_importantes: false,
+      tiene_otros_ahorros: false,
+      frecuencia_pagos: "siempre",
+      comodidad_digital: "muy_comodo",
     },
   });
 
   const onSubmit = async (data: UserCharacterizationForm) => {
-    // Simulate API call
-    console.log("Form data submitted:", data);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    alert("Form submitted successfully!");
+    try {
+      await api.post("/formularios", data);
+      alert("Formulario enviado exitosamente");
+    } catch (error) {
+      console.error("Error al enviar el formulario:", error);
+      alert("Error al enviar el formulario");
+    }
   };
 
   return (
     <Card className="w-full max-w-4xl mx-auto">
       <CardHeader>
-        <CardTitle>User Characterization Form</CardTitle>
+        <CardTitle>Formulario de Caracterización</CardTitle>
         <CardDescription>
-          Help us understand you better by filling out this profile information
+          Queremos conocer mejor tus metas para ayudarte a cumplirlas
         </CardDescription>
       </CardHeader>
 
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <Input
-              label="Full Name"
-              {...register("fullName", {
-                required: "Full name is required",
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold">1. Conectemos con tu meta</h2>
+            
+            <TextArea
+              label="¿Qué te motivó a dar el primer paso?"
+              placeholder="Cuéntanos sobre tu sueño, cambio o necesidad..."
+              {...register("motivacion", {
+                required: "Este campo es requerido",
               })}
-              error={errors.fullName?.message}
+              error={errors.motivacion?.message}
+            />
+
+            <Select
+              label="¿Cuánto tiempo te das para lograrlo?"
+              options={PLAZO_OPTIONS}
+              {...register("plazo_objetivo", {
+                required: "Por favor selecciona un plazo",
+              })}
+              error={errors.plazo_objetivo?.message}
+            />
+
+            <TextArea
+              label="¿Qué sentirías al alcanzar esta meta?"
+              placeholder="Por ejemplo: tranquilidad, orgullo, seguridad..."
+              {...register("emocion_logro", {
+                required: "Este campo es requerido",
+              })}
+              error={errors.emocion_logro?.message}
             />
 
             <Input
-              label="Age"
               type="number"
-              {...register("age", {
-                required: "Age is required",
-                min: { value: 18, message: "You must be at least 18 years old" },
-                max: { value: 120, message: "Please enter a valid age" },
+              label="¿Qué tan importante es esta meta para ti? (1-5)"
+              min={1}
+              max={5}
+              {...register("importancia", {
+                required: "Este campo es requerido",
+                min: { value: 1, message: "El valor mínimo es 1" },
+                max: { value: 5, message: "El valor máximo es 5" },
               })}
-              error={errors.age?.message}
+              error={errors.importancia?.message}
             />
+          </div>
+
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold">2. Acompañamiento personalizado con PenguIA</h2>
 
             <Select
-              label="Gender"
-              options={GENDER_OPTIONS}
-              {...register("gender", {
-                required: "Please select your gender",
+              label="¿Con qué frecuencia te gustaría recibir actualizaciones?"
+              options={FRECUENCIA_ACTUALIZACIONES_OPTIONS}
+              {...register("frecuencia_actualizaciones", {
+                required: "Por favor selecciona una frecuencia",
               })}
-              error={errors.gender?.message}
+              error={errors.frecuencia_actualizaciones?.message}
             />
 
-            <Input
-              label="Occupation"
-              {...register("occupation", {
-                required: "Occupation is required",
-              })}
-              error={errors.occupation?.message}
-            />
-
-            <Select
-              label="Education Level"
-              options={EDUCATION_OPTIONS}
-              {...register("education", {
-                required: "Please select your education level",
-              })}
-              error={errors.education?.message}
-            />
-
-            <div className="space-y-2">
+            <div className="space-y-4">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                Favorite Color
+                ¿Qué tipo de ayuda te gustaría recibir?
               </label>
-              <div className="flex items-center space-x-2">
-                <input
-                  type="color"
-                  className="h-10 w-10 rounded border border-slate-300 dark:border-slate-600"
-                  {...register("favoriteColor")}
+              
+              <div className="space-y-2">
+                <Checkbox
+                  label="Recordatorios para mantenerme al día"
+                  {...register("ayuda_recordatorios")}
                 />
-                <Input
-                  {...register("favoriteColor")}
-                  className="flex-1"
+                <Checkbox
+                  label="Consejos para mejorar mis finanzas"
+                  {...register("ayuda_consejos")}
+                />
+                <Checkbox
+                  label="Explicaciones claras sobre cómo crece mi ahorro"
+                  {...register("ayuda_explicaciones")}
+                />
+                <Checkbox
+                  label="Solo mensajes importantes"
+                  {...register("ayuda_mensajes_importantes")}
                 />
               </div>
             </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
-              Interests (select all that apply)
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
-              {INTEREST_OPTIONS.map((interest) => (
-                <div key={interest.id}>
-                  <Controller
-                    name="interests"
-                    control={control}
-                    render={({ field }) => (
-                      <Checkbox
-                        id={`interest-${interest.id}`}
-                        label={interest.label}
-                        checked={field.value?.includes(interest.id)}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          const currentInterests = field.value || [];
-                          if (checked) {
-                            field.onChange([...currentInterests, interest.id]);
-                          } else {
-                            field.onChange(
-                              currentInterests.filter(
-                                (i) => i !== interest.id
-                              )
-                            );
-                          }
-                        }}
-                      />
-                    )}
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
+          <div className="space-y-6">
+            <h2 className="text-xl font-semibold">3. Tus hábitos financieros</h2>
 
-          <TextArea
-            label="Bio"
-            rows={4}
-            placeholder="Tell us a bit about yourself..."
-            {...register("bio", {
-              required: "Please enter a short bio",
-              maxLength: {
-                value: 500,
-                message: "Bio cannot exceed 500 characters",
-              },
-            })}
-            error={errors.bio?.message}
-          />
+            <div className="space-y-2">
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300">
+                ¿Tienes actualmente otros mecanismos de ahorro o inversión?
+              </label>
+              <Checkbox
+                label="Sí"
+                {...register("tiene_otros_ahorros")}
+              />
+            </div>
+
+            <Select
+              label="¿Qué tan frecuente usas pagos automáticos o programados?"
+              options={FRECUENCIA_PAGOS_OPTIONS}
+              {...register("frecuencia_pagos", {
+                required: "Por favor selecciona una frecuencia",
+              })}
+              error={errors.frecuencia_pagos?.message}
+            />
+
+            <Select
+              label="¿Qué tan cómodo te sientes con herramientas digitales?"
+              options={COMODIDAD_DIGITAL_OPTIONS}
+              {...register("comodidad_digital", {
+                required: "Por favor selecciona tu nivel de comodidad",
+              })}
+              error={errors.comodidad_digital?.message}
+            />
+          </div>
 
           <div className="flex justify-end">
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Button type="submit" isLoading={isSubmitting}>
-                {isSubmitting ? "Submitting..." : "Save Profile"}
+                {isSubmitting ? "Enviando..." : "Enviar formulario"}
               </Button>
             </motion.div>
           </div>
