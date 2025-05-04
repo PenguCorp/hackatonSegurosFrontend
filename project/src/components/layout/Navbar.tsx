@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useTheme } from "../../context/ThemeContext";
 import { Button } from "../ui/Button";
-import { Moon, Sun, User, LogOut } from "lucide-react";
+import { Moon, Sun, Globe, LogOut } from "lucide-react";
 import { motion } from "framer-motion";
 
 export const Navbar: React.FC = () => {
@@ -20,12 +20,12 @@ export const Navbar: React.FC = () => {
             transition={{ duration: 0.5 }}
           >
             <Link
-              to="/"
+              to="/panelControl"
               className="text-xl font-bold text-blue-600 dark:text-blue-400"
             >
               <span className="flex items-center">
-                <User size={24} className="mr-2" />
-                UserProfile
+                <Globe size={24} className="mr-2" />
+                GlobalSeguros
               </span>
             </Link>
           </motion.div>
@@ -47,7 +47,7 @@ export const Navbar: React.FC = () => {
             {isAuthenticated ? (
               <>
                 <span className="hidden md:inline text-sm text-slate-600 dark:text-slate-300">
-                  Hello, {user?.nombre || user?.email}
+                  Hello, {user?.name || user?.email}
                 </span>
                 <Button
                   variant="ghost"
@@ -55,7 +55,7 @@ export const Navbar: React.FC = () => {
                   onClick={logout}
                   icon={<LogOut size={18} />}
                 >
-                  <span className="hidden sm:inline">Logout</span>
+                  <span className="hidden sm:inline">Cerrar Sesión</span>
                 </Button>
               </>
             ) : (

@@ -19,7 +19,7 @@ export const LoginPage: React.FC = () => {
     e.preventDefault();
     try {
       await login(email, password);
-      navigate("/dashboard");
+      navigate("/caracterizacion");
     } catch (err) {
       // Error is handled by the auth context
     }
@@ -90,7 +90,7 @@ export const LoginPage: React.FC = () => {
             
             <CardFooter className="flex-col items-center">
               <div className="text-sm text-slate-500 dark:text-slate-400">
-                Demo credentials: user@example.com / password
+                Demo credentials: user@example.com / 12345
               </div>
             </CardFooter>
           </Card>

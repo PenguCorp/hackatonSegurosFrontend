@@ -4,9 +4,10 @@ import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
 import { LoginPage } from "./pages/LoginPage";
 import { LogoutPage } from "./pages/LogoutPage";
-import { DashboardPage } from "./pages/Dashboard/DashboardPage";
+import { CharacterizationPage } from "./pages/Dashboard/CharacterizationPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
 import { PublicRoute } from "./routes/PublicRoute";
+import { DashboardFullPage } from "./pages/Dashboard/DashboardFullPage";
 
 function App() {
   return (
@@ -26,11 +27,15 @@ function App() {
             
             {/* Protected routes - require authentication */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/caracterizacion" element={<CharacterizationPage />} />
+            </Route>
+
+            <Route element={<ProtectedRoute />}>
+              <Route path="/panelControl" element={<DashboardFullPage />} />
             </Route>
             
             {/* Redirect root to dashboard if authenticated, otherwise to login */}
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/" element={<Navigate to="/panelControl" replace />} />
             
             {/* Catch-all route */}
             <Route path="*" element={<Navigate to="/" replace />} />

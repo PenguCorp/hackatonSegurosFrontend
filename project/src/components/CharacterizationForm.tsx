@@ -2,15 +2,15 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { motion } from "framer-motion";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../../components/ui/Card";
-import { Input } from "../../components/ui/Input";
-import { Select } from "../../components/ui/Select";
-import { TextArea } from "../../components/ui/TextArea";
-import { Button } from "../../components/ui/Button";
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "./ui/Card";
+import { Input } from "./ui/Input";
+import { Select } from "./ui/Select";
+import { TextArea } from "./ui/TextArea";
+import { Button } from "./ui/Button";
 import { Check } from "lucide-react";
-import { useAuth } from "../../context/AuthContext";
-import api from "../../utils/api";
-import { UserCharacterizationForm } from "../../types";
+import { useAuth } from "../context/AuthContext";
+import api from "../utils/api";
+import { UserCharacterizationForm } from "../types";
 
 const steps = ["Tu meta", "PenguIA", "Hábitos financieros"];
 
