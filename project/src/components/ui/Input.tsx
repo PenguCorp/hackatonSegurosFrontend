@@ -1,5 +1,4 @@
 import React, { forwardRef } from "react";
-import { clsx } from "clsx";
 
 interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -9,12 +8,23 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className, label, error, fullWidth = true, icon, ...props }, ref) => {
+  ({ className = "", label, error, fullWidth = true, icon, ...props }, ref) => {
+    const wrapperClass = `relative ${fullWidth ? "w-full" : ""}`;
+    const inputBaseClass =
+      "block rounded-md border py-2 shadow-sm transition-colors placeholder:text-slate-400 focus:outline-none focus:ring-1";
+    const borderClass = error
+      ? "border-red-500 focus:border-red-500 focus:ring-red-500"
+      : "border-slate-300 focus:border-blue-500 focus:ring-blue-500";
+    const paddingClass = icon ? "pl-10" : "px-3";
+    const themeClass = "bg-white text-slate-900";
+    const fullWidthClass = fullWidth ? "w-full" : "";
+    const finalInputClass = `${inputBaseClass} ${borderClass} ${paddingClass} ${themeClass} ${fullWidthClass} ${className}`;
+
     return (
-      <div className={clsx("relative", fullWidth && "w-full")}>
+      <div className={wrapperClass}>
         {label && (
           <label
-            className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1"
+            className="block text-sm font-medium text-slate-700 mb-1"
             htmlFor={props.id}
           >
             {label}
@@ -26,22 +36,10 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
               {icon}
             </div>
           )}
-          <input
-            ref={ref}
-            className={clsx(
-              "block rounded-md border border-slate-300 dark:border-slate-600 py-2 shadow-sm transition-colors placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:bg-slate-800 dark:text-slate-100",
-              icon ? "pl-10" : "px-3",
-              error
-                ? "border-red-500 focus:border-red-500 focus:ring-red-500"
-                : "",
-              fullWidth && "w-full",
-              className
-            )}
-            {...props}
-          />
+          <input ref={ref} className={finalInputClass} {...props} />
         </div>
         {error && (
-          <p className="mt-1 text-sm text-red-600 dark:text-red-500">{error}</p>
+          <p className="mt-1 text-sm text-red-600">{error}</p>
         )}
       </div>
     );

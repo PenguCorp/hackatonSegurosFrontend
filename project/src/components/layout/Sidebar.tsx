@@ -9,7 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
-  const [selectedItem, setSelectedItem] = useState<string>('home');
+  const [selectedItem, setSelectedItem] = useState<string>('');
   const [isOpen, setIsOpen] = useState(false);
 
   const toggleSidebar = () => setIsOpen(!isOpen);
@@ -28,7 +28,6 @@ export const Sidebar: React.FC = () => {
 
   return (
     <>
-      {/* Botón hamburguesa solo en móviles */}
       <div className="md:hidden fixed top-4 left-4 z-50">
         <button
           onClick={toggleSidebar}
@@ -38,7 +37,6 @@ export const Sidebar: React.FC = () => {
         </button>
       </div>
 
-      {/* Sidebar completa en escritorio */}
       <aside className="hidden md:flex flex-col w-64 h-screen bg-[#003366] border-r border-[#003696]/10 fixed">
         <SidebarContent
           selectedItem={selectedItem}
@@ -47,7 +45,6 @@ export const Sidebar: React.FC = () => {
         />
       </aside>
 
-      {/* Sidebar móvil animada */}
       <AnimatePresence>
         {isOpen && (
           <motion.aside

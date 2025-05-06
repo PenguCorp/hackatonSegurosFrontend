@@ -1,5 +1,4 @@
 import React from "react";
-import { clsx } from "clsx";
 import { motion } from "framer-motion";
 
 type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "danger";
@@ -20,36 +19,39 @@ export const Button: React.FC<ButtonProps> = ({
   isLoading = false,
   icon,
   fullWidth = false,
-  className,
+  className = "",
   disabled,
   ...props
 }) => {
-  const baseClasses = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
-  
-  const variants = {
-    primary: "bg-blue-600 text-white hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800",
-    secondary: "bg-teal-600 text-white hover:bg-teal-700 dark:bg-teal-700 dark:hover:bg-teal-800",
-    outline: "border border-slate-300 bg-transparent hover:bg-slate-100 dark:border-slate-600 dark:hover:bg-slate-800",
-    ghost: "bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-900 dark:text-slate-100",
-    danger: "bg-red-600 text-white hover:bg-red-700 dark:bg-red-700 dark:hover:bg-red-800",
+  const baseClasses =
+    "inline-flex items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none";
+
+  const variants: Record<ButtonVariant, string> = {
+    primary: "bg-blue-600 text-white hover:bg-blue-700",
+    secondary: "bg-teal-600 text-white hover:bg-teal-700",
+    outline: "border border-slate-300 bg-transparent hover:bg-slate-100",
+    ghost: "bg-transparent hover:bg-slate-100 text-slate-900",
+    danger: "bg-red-600 text-white hover:bg-red-700",
   };
-  
-  const sizes = {
+
+  const sizes: Record<ButtonSize, string> = {
     sm: "h-9 px-3 text-sm",
     md: "h-10 py-2 px-4",
     lg: "h-12 px-6 text-lg",
   };
-  
+
+  const buttonClass = `
+    ${baseClasses}
+    ${variants[variant]}
+    ${sizes[size]}
+    ${fullWidth ? "w-full" : ""}
+    ${className}
+  `;
+
   return (
     <motion.button
       whileTap={{ scale: 0.98 }}
-      className={clsx(
-        baseClasses,
-        variants[variant],
-        sizes[size],
-        fullWidth && "w-full",
-        className
-      )}
+      className={buttonClass}
       disabled={disabled || isLoading}
       {...props}
     >

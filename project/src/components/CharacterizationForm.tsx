@@ -12,7 +12,7 @@ import { useAuth } from "../context/AuthContext";
 import api from "../utils/api";
 import { UserCharacterizationForm } from "../types";
 
-const steps = ["Tu meta", "PenguIA", "Hábitos financieros"];
+const steps = ["Tu meta", "Platin", "Hábitos financieros"];
 
 interface SelectableCardProps {
   label: string;
@@ -23,9 +23,10 @@ interface SelectableCardProps {
 const SelectableCard: React.FC<SelectableCardProps> = ({ label, selected, onClick }) => (
   <div
     onClick={onClick}
-    className={`flex items-center justify-between border rounded-xl px-4 py-3 transition-all cursor-pointer ${
-      selected ? "bg-blue-100 dark:bg-blue-900 border-blue-500 shadow-md" : "bg-white dark:bg-slate-800 border-slate-300 dark:border-slate-600 hover:border-blue-400"
-    }`}
+    className={`flex items-center justify-between border rounded-xl px-4 py-3 transition-all cursor-pointer ${selected
+    ? "bg-blue-100 border-blue-500 shadow-md"
+    : "bg-white border-slate-300 hover:border-blue-400"
+    } `}
   >
     <span className="text-sm font-medium">{label}</span>
     {selected && <Check className="h-5 w-5 text-blue-500" />}
@@ -127,7 +128,7 @@ export const CharacterizationForm: React.FC = () => {
               <button
                 type="button"
                 key={index}
-                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${step === index ? "bg-blue-500 text-white" : "bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-white"}`}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${step === index? "bg-yellow-400 text-white" : "bg-slate-200 text-slate-700"}`}
                 onClick={() => setStep(index)}
               >
                 {title}
