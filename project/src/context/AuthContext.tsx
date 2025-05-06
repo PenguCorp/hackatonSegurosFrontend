@@ -11,10 +11,10 @@ const loginApi = async (email: string, password: string): Promise<User> => {
     const response = await api.post("/auth", { email, password });
     return response.data;
   } catch (error) {
-    if (error.response?.status === 401) {
-      throw new Error("Invalid credentials");
+    if ((error as any).response?.status === 401) {
+      throw new Error("Credenciales incorrectas");
     }
-    throw new Error("An error occurred during login");
+    throw new Error("Ha ocurrido un error al iniciar sesión");
   }
 };
 
@@ -47,7 +47,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(userData);
       localStorage.setItem("user", JSON.stringify(userData));
     } catch (err) {
-      setError(err instanceof Error ? err.message : "An unknown error occurred");
+      setError(err instanceof Error ? err.message : "Ocurrió un error desconocido");
     } finally {
       setIsLoading(false);
     }

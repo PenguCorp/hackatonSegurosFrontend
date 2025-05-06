@@ -1,45 +1,61 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider, useAuth } from "./context/AuthContext";
 import { LoginPage } from "./pages/LoginPage";
 import { LogoutPage } from "./pages/LogoutPage";
 import { CharacterizationPage } from "./pages/Dashboard/CharacterizationPage";
 import { ProtectedRoute } from "./routes/ProtectedRoute";
-import { PublicRoute } from "./routes/PublicRoute";
 import { DashboardFullPage } from "./pages/Dashboard/DashboardFullPage";
+import { PlatinChatPage } from "./pages/Dashboard/PlatinChatPage";
+import { PublicHomePage } from "./pages/HomePage"; // 👈 tu nueva página pública
+
+const RootRedirect = () => {
+  const { isAuthenticated } = useAuth();
+  return <Navigate to={isAuthenticated ? "/panelControl" : "/home"} replace />;
+};
+
+function AppRoutes() {
+  const location = useLocation();
+  const background = location.state && location.state.background;
+
+  return (
+    <>
+      <Routes location={background || location}>
+        <Route path="/" element={<RootRedirect />} />
+
+        {/* Public Home */}
+        <Route path="/home" element={<PublicHomePage />} />
+        
+        {/* Public Modal login */}
+        <Route path="/login" element={<LoginPage />} />
+        
+        {/* Protected routes */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/panelControl" element={<DashboardFullPage />} />
+          <Route path="/platin" element={<PlatinChatPage />} />
+          <Route path="/caracterizacion" element={<CharacterizationPage />} />
+        </Route>
+
+        {/* Logout now redirects to /home */}
+        <Route path="/logout" element={<LogoutPage />} />
+
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/home" replace />} />
+      </Routes>
+
+      {/* Modal rendering over existing content */}
+      {background && <Routes><Route path="/login" element={<LoginPage />} /></Routes>}
+    </>
+  );
+}
 
 function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
         <Router>
-          <Routes>
-            {/* Public routes - redirect authenticated users to dashboard */}
-            <Route element={<PublicRoute redirectAuthenticated={true} />}>
-              <Route path="/login" element={<LoginPage />} />
-            </Route>
-            
-            {/* Public routes - accessible by all */}
-            <Route element={<PublicRoute />}>
-              <Route path="/logout" element={<LogoutPage />} />
-            </Route>
-            
-            {/* Protected routes - require authentication */}
-            <Route element={<ProtectedRoute />}>
-              <Route path="/caracterizacion" element={<CharacterizationPage />} />
-            </Route>
-
-            <Route element={<ProtectedRoute />}>
-              <Route path="/panelControl" element={<DashboardFullPage />} />
-            </Route>
-            
-            {/* Redirect root to dashboard if authenticated, otherwise to login */}
-            <Route path="/" element={<Navigate to="/panelControl" replace />} />
-            
-            {/* Catch-all route */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+          <AppRoutes />
         </Router>
       </AuthProvider>
     </ThemeProvider>

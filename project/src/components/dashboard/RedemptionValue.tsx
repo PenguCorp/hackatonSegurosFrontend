@@ -21,13 +21,13 @@ export const RedemptionValue: React.FC<RedemptionValueProps> = ({ value }) => {
       penaltyPercentage: value.currentPenaltyPercentage
     },
     '1year': {
-      label: 'En 1 Año',
+      label: 'En 1 año',
       value: value.oneYearValue,
       penalty: value.oneYearPenalty,
       penaltyPercentage: value.oneYearPenaltyPercentage
     },
     '3years': {
-      label: 'En 3 Años',
+      label: 'En 3 años',
       value: value.threeYearValue,
       penalty: value.threeYearPenalty,
       penaltyPercentage: value.threeYearPenaltyPercentage
@@ -49,7 +49,7 @@ export const RedemptionValue: React.FC<RedemptionValueProps> = ({ value }) => {
         <Card.Header className="pb-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Card.Title className="text-lg">Valor de Rescate Rstimado</Card.Title>
+              <Card.Title className="text-lg">Valor de Rescate Estimado</Card.Title>
               <Tooltip content="Basado en la cláusula 20 del contrato">
                 <Info size={16} className="text-slate-400 cursor-help" />
               </Tooltip>

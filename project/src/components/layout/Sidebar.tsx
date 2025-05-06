@@ -1,113 +1,130 @@
+// SidebarResponsive.tsx
 import React, { useState } from 'react';
-import { Button } from "../ui/Button";
-import { useAuth } from "../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
-
-import { Home, Calculator, HelpCircle, LogOut, Globe, BarChart3, User, Radio } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Home, Calculator, HelpCircle, LogOut, Globe, BarChart3, User, Radio, Menu } from 'lucide-react';
+import { Button } from '../ui/Button';
+import { useAuth } from '../../context/AuthContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const Sidebar: React.FC = () => {
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout } = useAuth();
-  const [isCharacterizationOpen, setIsCharacterizationOpen] = useState(false);
+  const { logout } = useAuth();
   const [selectedItem, setSelectedItem] = useState<string>('home');
+  const [isOpen, setIsOpen] = useState(false);
 
-  const handleOpenCharacterization = () => {
-    setIsCharacterizationOpen(true);
-    setSelectedItem('caracterization');
-    navigate('/caracterizacion');
-  };
+  const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const motionProps = {
-    initial: { opacity: 0, x: -20 },
-    animate: { opacity: 1, x: 0 },
-    transition: { duration: 0.4 },
+  const menuItems = [
+    { key: 'home', label: 'Panel Principal', icon: Home, path: '/panelControl' },
+    { key: 'platin', label: 'Platin', icon: Radio, path: '/platin' },
+    { key: 'caracterization', label: 'Caracterización', icon: User, path: '/caracterizacion' },
+  ];
+
+  const handleNavigation = (key: string, path: string) => {
+    setSelectedItem(key);
+    setIsOpen(false);
+    navigate(path);
   };
 
   return (
-    <aside className="hidden md:flex flex-col w-64 h-screen bg-[#003366] border-r border-[#003696]/10 fixed">
-      <div className="p-4 border-b border-[#003696]/10">
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
+    <>
+      {/* Botón hamburguesa solo en móviles */}
+      <div className="md:hidden fixed top-4 left-4 z-50">
+        <button
+          onClick={toggleSidebar}
+          className="text-white bg-[#003366] p-2 rounded-md shadow"
         >
-          <h2 className="text-xl font-bold flex items-center text-white">
-          <Globe size={24} className="mr-2 text-[#00BFFF]" />
-          GlobalSeguros
-        </h2>
-        </motion.div>
-        
+          <Menu size={24} />
+        </button>
       </div>
-      <nav className="flex-1 p-4">
-        <ul className="space-y-2">
-          <motion.li {...motionProps}>
-            <a
-              className={`flex items-center p-2 rounded-lg ${selectedItem === 'home' ? 'bg-[#00BFFF]/30 text-white' : 'text-white hover:bg-[#00BFFF]/20 hover:text-[#00BFFF]'} font-medium`}
-              onClick={() => setSelectedItem('home')}
+
+      {/* Sidebar completa en escritorio */}
+      <aside className="hidden md:flex flex-col w-64 h-screen bg-[#003366] border-r border-[#003696]/10 fixed">
+        <SidebarContent
+          selectedItem={selectedItem}
+          handleNavigation={handleNavigation}
+          logout={logout}
+        />
+      </aside>
+
+      {/* Sidebar móvil animada */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.aside
+            className="fixed top-0 left-0 z-40 w-64 h-full bg-[#003366] shadow-lg md:hidden"
+            initial={{ x: -300 }}
+            animate={{ x: 0 }}
+            exit={{ x: -300 }}
+            transition={{ duration: 0.3 }}
+          >
+            <SidebarContent
+              selectedItem={selectedItem}
+              handleNavigation={handleNavigation}
+              logout={logout}
+            />
+          </motion.aside>
+        )}
+      </AnimatePresence>
+    </>
+  );
+};
+
+interface SidebarContentProps {
+  selectedItem: string;
+  handleNavigation: (key: string, path: string) => void;
+  logout: () => void;
+}
+
+const SidebarContent: React.FC<SidebarContentProps> = ({ selectedItem, handleNavigation, logout }) => {
+  const items = [
+    { key: 'home', label: 'Panel Principal', icon: Home, path: '/panelControl' },
+    { key: 'platin', label: 'Platin', icon: Radio, path: '/platin' },
+    { key: 'caracterization', label: 'Caracterización', icon: User, path: '/caracterizacion' },
+  ];
+
+  return (
+    <div className="flex flex-col h-full justify-between">
+      <div>
+        <div className="p-6 border-b border-[#003696]/10">
+          <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <Globe size={24} className="text-[#00BFFF]" />
+            GlobalSeguros
+          </h2>
+        </div>
+
+        <nav className="p-4 space-y-1">
+          {items.map(({ key, label, icon: Icon, path }) => (
+            <button
+              key={key}
+              onClick={() => handleNavigation(key, path)}
+              className={`w-full flex items-center justify-start p-3 rounded-lg font-medium transition-colors whitespace-nowrap ${
+                selectedItem === key
+                  ? 'bg-[#00BFFF]/30 text-white'
+                  : 'text-white hover:bg-[#00BFFF]/20 hover:text-[#00BFFF]'
+              }`}
             >
-              <Home size={20} className="mr-3 text-[#00BFFF]" />
-              Panel Principal
-            </a>
-          </motion.li>
-          <motion.li {...motionProps}>
-            <a
-              className={`flex items-center p-2 rounded-lg ${selectedItem === 'calculator' ? 'bg-[#00BFFF]/30 text-white' : 'text-white hover:bg-[#00BFFF]/20 hover:text-[#00BFFF]'}`}
-              onClick={() => setSelectedItem('calculator')}
-            >
-              <Calculator size={20} className="mr-3 text-[#00BFFF]" />
-              Calculadora Financiera
-            </a>
-          </motion.li>
-          <motion.li {...motionProps}>
-            <a
-              className={`flex items-center p-2 rounded-lg ${selectedItem === 'statistics' ? 'bg-[#00BFFF]/30 text-white' : 'text-white hover:bg-[#00BFFF]/20 hover:text-[#00BFFF]'}`}
-              onClick={() => setSelectedItem('statistics')}
-            >
-              <BarChart3 size={20} className="mr-3 text-[#00BFFF]" />
-              Estadísticas
-            </a>
-          </motion.li>
-          <motion.li {...motionProps}>
-            <a
-              className={`flex items-center p-2 rounded-lg ${selectedItem === 'platin' ? 'bg-[#00BFFF]/30 text-white' : 'text-white hover:bg-[#00BFFF]/20 hover:text-[#00BFFF]'}`}
-              onClick={() => setSelectedItem('platin')}
-            >
-              <Radio size={20} className="mr-3 text-[#00BFFF]" />
-              Platin
-            </a>
-          </motion.li>
-          <motion.li {...motionProps}>
-            <a
-              onClick={handleOpenCharacterization}
-              className={`flex items-center p-2 rounded-lg ${selectedItem === 'caracterization' ? 'bg-[#00BFFF]/30 text-white' : 'text-white hover:bg-[#00BFFF]/20 hover:text-[#00BFFF]'}`}
-            >
-              <User size={20} className="mr-3 text-[#00BFFF]" />
-              Caracterización
-            </a>
-          </motion.li>
-        </ul>
-      </nav>
-      <div className="p-4 border-t border-[#003696]/10">
-        <ul className="space-y-2">
-          <motion.li {...motionProps}>
-            <a className="flex items-center p-2 rounded-lg text-white hover:bg-[#00BFFF]/20 hover:text-[#00BFFF] transition-colors">
-              <HelpCircle size={20} className="mr-3 text-[#00BFFF]" />
-              Ayuda y Soporte
-            </a>
-          </motion.li>
-          <motion.li {...motionProps}>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={logout}
-              icon={<LogOut size={18} />}
-            >
-              <span className="hidden sm:inline">Cerrar Sesión</span>
-            </Button>
-          </motion.li>
-        </ul>
+              <Icon size={20} className="mr-3 text-[#00BFFF]" />
+              <span className="whitespace-nowrap">{label}</span>
+            </button>
+          ))}
+        </nav>
       </div>
-    </aside>
+
+      <div className="px-4 pb-4 border-t border-[#003696]/10 space-y-2">
+        <a className="flex items-center p-2 rounded-lg text-white hover:bg-[#00BFFF]/20 hover:text-[#00BFFF] transition-colors cursor-pointer">
+          <HelpCircle size={20} className="mr-3 text-[#00BFFF]" />
+          Ayuda y Soporte
+        </a>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={logout}
+          icon={<LogOut size={18} />}
+          className="text-white hover:text-[#00BFFF]"
+        >
+          <span className="hidden sm:inline">Cerrar Sesión</span>
+        </Button>
+      </div>
+    </div>
   );
 };

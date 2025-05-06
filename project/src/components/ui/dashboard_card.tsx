@@ -31,11 +31,11 @@ interface CardFooterProps {
 }
 
 const CardHeader = ({ children, className = '' }: CardHeaderProps) => (
-  <div className={`p-6 ${className}`}>{children}</div>
+  <div className={`px-6 pt-6 ${className}`}>{children}</div>
 );
 
 const CardTitle = ({ children, className = '' }: CardTitleProps) => (
-  <h3 className={`text-xl font-semibold text-slate-900 ${className}`}>{children}</h3>
+  <h3 className={`text-lg font-semibold text-slate-800 tracking-tight ${className}`}>{children}</h3>
 );
 
 const CardDescription = ({ children, className = '' }: CardDescriptionProps) => (
@@ -43,16 +43,18 @@ const CardDescription = ({ children, className = '' }: CardDescriptionProps) => 
 );
 
 const CardContent = ({ children, className = '' }: CardContentProps) => (
-  <div className={`px-6 pb-6 ${className}`}>{children}</div>
+  <div className={`px-6 py-4 ${className}`}>{children}</div>
 );
 
 const CardFooter = ({ children, className = '' }: CardFooterProps) => (
-  <div className={`p-6 pt-0 ${className}`}>{children}</div>
+  <div className={`px-6 pb-6 ${className}`}>{children}</div>
 );
 
 export const Card = ({ children, className = '' }: CardProps) => {
   return (
-    <div className={`bg-white rounded-xl shadow-sm border-4 border-slate-400 overflow-hidden ${className}`}>
+    <div
+      className={`bg-white rounded-2xl border border-slate-200 shadow-lg hover:shadow-xl transition duration-300 ${className}`}
+    >
       {children}
     </div>
   );
