@@ -14,12 +14,6 @@ export const Sidebar: React.FC = () => {
 
   const toggleSidebar = () => setIsOpen(!isOpen);
 
-  const menuItems = [
-    { key: 'home', label: 'Panel Principal', icon: Home, path: '/panelControl' },
-    { key: 'platin', label: 'Platin', icon: Radio, path: '/platin' },
-    { key: 'caracterization', label: 'Caracterización', icon: User, path: '/caracterizacion' },
-  ];
-
   const handleNavigation = (key: string, path: string) => {
     setSelectedItem(key);
     setIsOpen(false);
@@ -77,6 +71,7 @@ const SidebarContent: React.FC<SidebarContentProps> = ({ selectedItem, handleNav
     { key: 'home', label: 'Panel Principal', icon: Home, path: '/panelControl' },
     { key: 'platin', label: 'Platin', icon: Radio, path: '/platin' },
     { key: 'caracterization', label: 'Caracterización', icon: User, path: '/caracterizacion' },
+    { key: 'financialCalculator', label: 'Calculadora Fin.', icon: Calculator, path: '/panelControl' }
   ];
 
   return (
